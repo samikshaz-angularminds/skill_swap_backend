@@ -1,0 +1,1 @@
+multer is accepting only jpg, why?
