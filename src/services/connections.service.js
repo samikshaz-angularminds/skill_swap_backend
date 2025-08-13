@@ -107,13 +107,13 @@ const showAcceptedRequestService = async (userId) => {
 
 
 export default {
-sendConnectionRequestService,
-acceptConnectionRequestService,
-rejectConnectionRequestService,
-cancelConnectionRequestService,
-showPendingRequestService,
-showReceivedRequestService,
-showAcceptedRequestService
+    sendConnectionRequestService,
+    acceptConnectionRequestService,
+    rejectConnectionRequestService,
+    cancelConnectionRequestService,
+    showPendingRequestService,
+    showReceivedRequestService,
+    showAcceptedRequestService
 }
 
 

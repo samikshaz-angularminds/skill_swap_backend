@@ -19,7 +19,7 @@ const avatarSchema = new mongoose.Schema({
 const UserSchema = new Schema(
   {
     uid: {
-      type: 'UUID', // Using UUID for unique user identifier
+      type: String, // Using UUID for unique user identifier
       required: true,
       unique: true, // Ensures that uid is unique
       index: true,  // Optional: creates an index for faster lookups

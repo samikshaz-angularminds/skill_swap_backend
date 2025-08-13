@@ -1,5 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
-import bcrypt from 'bcryptjs';
 import User from "../models/user.model.js";
 import { envConfig } from '../config/envConfig.js';
 import ApiError from '../errors/ApiError.js';
@@ -7,7 +5,8 @@ import redisClient from '../config/redis.js';
 import { transporter } from '../utils/sendEmailUtil.js';
 import { OAuth2Client } from "google-auth-library"
 import {randomUUID} from 'crypto'
-
+import jwt from "jsonwebtoken";
+let refreshTokens = [];
 
 const client = new OAuth2Client(envConfig.google_client_id);
 
@@ -68,7 +67,10 @@ const userSignUpService = async (userDetails) => {
   }
   // const hashedPassword = await bcrypt.hash(userDetails.password, 12);
 
-  const newUser = await User.create({ uid: () => randomUUID(), ...userDetails });
+  const newUser = await User.create({ uid: randomUUID(), ...userDetails });
+
+  // console.log("newly created user is-- ",newUser);
+  
 
   return newUser;
 };
@@ -82,6 +84,8 @@ const userSignUpService = async (userDetails) => {
  */
 const userLoginService = async (requestBody) => {
   const user = await User.findOne({ email: requestBody.email });
+  console.log("requestBody in login: ",requestBody);
+  
 
   if (!user) {
     throw new ApiError("User not found")

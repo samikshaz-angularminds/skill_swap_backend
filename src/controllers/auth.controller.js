@@ -1,14 +1,6 @@
-import { v4 as uuidv4 } from "uuid";
-import { envConfig } from "../config/envConfig.js";
 import authService from "../services/auth.service.js"
 import catchAsync from "../middlewares/catchAsync.js";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import User from "../models/user.model.js";
 import sendResponse from "../responses/sendResponse.js"
-import ApiError from "../errors/ApiError.js";
-
-let refreshTokens = [];
 
 const REFRESH_TOKEN_COOKIE_OPTIONS = {
     httpOnly: true,
@@ -32,9 +24,9 @@ const userSignUp = catchAsync(async (req, res) => {
 
 // Login User
 const userLogin = catchAsync(async (req, res) => {
+    // console.log("req.body-- ",req.body);
 
-    const user = await authService.userLoginService(...req.body)
-
+    const user = await authService.userLoginService({...req.body})
 
     const accessToken = authService.generateAccessToken(user);
     const refreshToken = authService.generateRefreshToken(user);

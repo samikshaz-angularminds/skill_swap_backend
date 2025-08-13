@@ -1,13 +1,12 @@
 import cloudinary from "../config/cloudinaryConfig.js";
 import catchAsync from "../middlewares/catchAsync.js";
-import User from "../models/user.model.js";
 import sendResponse from "../responses/sendResponse.js"; // Adjust the path as needed
-import { getUserService, getAllUsersService, deleteUserService, updateProfileImageService, updateUserService } from "../services/user.service.js";
+import userService from "../services/user.service.js";
 
-export const updateProfileImage = catchAsync(async (req, res) => {
+const updateProfileImage = catchAsync(async (req, res) => {
     // console.log(req.file);
 
-    const updateProfilePic = await updateProfileImageService(req.file.path)
+    const updateProfilePic = await userService.updateProfileImageService(req.file.path)
 
     // console.log("updateProfilePic-- ", updateProfilePic);
 
@@ -28,14 +27,14 @@ export const updateProfileImage = catchAsync(async (req, res) => {
 })
 
 // Update User
-export const updateUser = catchAsync(async (req, res) => {
+const updateUser = catchAsync(async (req, res) => {
     const userId = req.params.id;
     const { name, username, bio, location, email } = req.body;
 
     console.log(req.body);
-    
 
-    const updatedUser = await updateUserService({ userId, userData: req.body })
+
+    const updatedUser = await userService.updateUserService({ userId, userData: req.body })
 
     if (!updatedUser) {
         return sendResponse(res, {
@@ -52,10 +51,10 @@ export const updateUser = catchAsync(async (req, res) => {
 });
 
 // Delete User
-export const deleteUser = catchAsync(async (req, res) => {
+const deleteUser = catchAsync(async (req, res) => {
     const userId = req.user._id;
 
-    const user = await deleteUserService(userId);
+    const user = await userService.deleteUserService(userId);
 
     if (!user) {
         return sendResponse(res, {
@@ -77,10 +76,10 @@ export const deleteUser = catchAsync(async (req, res) => {
 });
 
 // get logged in user
-export const getUser = catchAsync(async (req, res) => {
+const getUser = catchAsync(async (req, res) => {
     const userId = req.use._id;
 
-    const user = await getUserService(userId);
+    const user = await userService.getUserService(userId);
 
     if (!user) {
         return sendResponse(res, {
@@ -98,8 +97,8 @@ export const getUser = catchAsync(async (req, res) => {
 })
 
 // get all users
-export const getAllUsers = catchAsync(async (req, res) => {
-    const users = await getAllUsersService(req.user._id);
+const getAllUsers = catchAsync(async (req, res) => {
+    const users = await userService.getAllUsersService(req.user._id);
 
     sendResponse(res, {
         statusCode: 200,
@@ -108,3 +107,33 @@ export const getAllUsers = catchAsync(async (req, res) => {
         data: users
     })
 })
+
+const getOneUser = catchAsync(async (req, res) => {
+    const userId = req.params.id;
+
+    const user = await userService.getOneUserService(userId);
+
+    if (!user) {
+        return sendResponse(res, {
+            statusCode: 404,
+            success: false,
+            message: "User not found",
+        });
+    }
+
+    return sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "User found successfully",
+        data: user
+    });
+})
+
+export default {
+    updateProfileImage,
+    updateUser,
+    deleteUser,
+    getUser,
+    getAllUsers,
+    getOneUser
+}
