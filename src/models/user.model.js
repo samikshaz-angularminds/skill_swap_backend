@@ -30,10 +30,10 @@ const UserSchema = new Schema(
     },
 
     username: String, // Unique handle
-    email: { type: String, unique: true },
+    email: { type: String,  unique: true},
     password: String, // Hashed password
     authProvider: String, // e.g., "local", "google", "github"
-    outhId: String,
+    oAuthId: String,
 
     avatar: avatarSchema, // Profile picture
     bio: {

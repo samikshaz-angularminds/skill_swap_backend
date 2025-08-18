@@ -4,7 +4,7 @@ import ApiError from '../errors/ApiError.js';
 import redisClient from '../config/redis.js';
 import { transporter } from '../utils/sendEmailUtil.js';
 import { OAuth2Client } from "google-auth-library"
-import {randomUUID} from 'crypto'
+import { randomUUID } from 'crypto'
 import jwt from "jsonwebtoken";
 let refreshTokens = [];
 
@@ -70,7 +70,7 @@ const userSignUpService = async (userDetails) => {
   const newUser = await User.create({ uid: randomUUID(), ...userDetails });
 
   // console.log("newly created user is-- ",newUser);
-  
+
 
   return newUser;
 };
@@ -84,8 +84,8 @@ const userSignUpService = async (userDetails) => {
  */
 const userLoginService = async (requestBody) => {
   const user = await User.findOne({ email: requestBody.email });
-  console.log("requestBody in login: ",requestBody);
-  
+  console.log("requestBody in login: ", requestBody);
+
 
   if (!user) {
     throw new ApiError("User not found")
@@ -101,25 +101,50 @@ const userLoginService = async (requestBody) => {
 };
 
 const googleLoginService = async (requestBody) => {
-  console.log(requestBody);
+  // console.log("requestBody-- ", requestBody);
 
   const ticket = await client.verifyIdToken({
     idToken: requestBody.idToken,
     audience: envConfig.google_client_id
   })
 
-
-
   const payload = ticket.getPayload();
 
-  const existingUser = await User.findOne({email: payload.email});
-
-  if(!existingUser){
-
+  if (!payload) {
+    throw new ApiError("User does not exist.")
   }
 
-  console.log("payload-- ",payload);
+  // console.log("payload: ", payload);
 
+  let user = await User.findOne({ oAuthId: payload.sub });
+
+  if (!user) {
+    user = await User.findOne({ email: payload.email })
+
+    // console.log("existingUserWithEmail== ", user);
+
+    if (user) {
+      user.oAuthId = payload.sub;
+
+      await user.save();
+
+      // console.log("updated user: ", user);
+
+    }
+    else {
+      user = await User.create({
+        uid: randomUUID(),
+        oAuthId: payload.sub,
+        email: payload.email,
+        name: {
+          first: payload.given_name,
+          last: payload.family_name
+        }
+      })
+
+    }
+  }
+  return user;
 }
 
 const forgotPasswordService = async (email) => {

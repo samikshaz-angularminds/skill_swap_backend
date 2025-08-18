@@ -1,5 +1,5 @@
-import ApiError from "./ApiError";
-import { envConfig } from "../config/envConfig";
+import ApiError from "./ApiError.js";
+import { envConfig } from "../config/envConfig.js";
 
 const errorHandler = (err,req,res,next) => {
     let statusCode = err.statusCode || 500;
@@ -8,7 +8,7 @@ const errorHandler = (err,req,res,next) => {
     res.status(statusCode).json({
         success: false,
         message,
-        ...ApiError(envConfig.env === 'development' && {stack: err.stack})
+        ...new ApiError(envConfig.env === 'development' && {stack: err.stack})
 
     })
 }

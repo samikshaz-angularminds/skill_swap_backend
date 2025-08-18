@@ -6,6 +6,7 @@ import ApiError from "./errors/ApiError.js";
 import session  from "express-session";
 import passport from "./config/passport.js";
 import cookieParser from "cookie-parser";
+import errorHandler from "./errors/errorHandler.js";
 
 const app = express();
 
@@ -39,5 +40,6 @@ app.use((req,res,next) => {
     next(new ApiError(httpStatus.NOT_FOUND, 'not found'));
 });
 
+app.use(errorHandler)
 
 export default app;

@@ -54,7 +54,33 @@ const userLogin = catchAsync(async (req, res) => {
 });
 
 const googleLogin = catchAsync(async (req, res) => {
-    const loginResponse = await authService.googleLoginService(req.body);
+    const user = await authService.googleLoginService(req.body);
+
+    
+
+    const accessToken = authService.generateAccessToken(user);
+    const refreshToken = authService.generateRefreshToken(user);
+
+    // console.log("access token-- ",accessToken);
+    // console.log("refresh token-- ",refreshToken);
+
+    res.cookie("refreshToken", refreshToken, REFRESH_TOKEN_COOKIE_OPTIONS);
+
+    return sendResponse(res, {
+        statusCode: 200,
+        message: "Login successful88",
+        data: {
+            accessToken,
+            user: {
+                id: user._id,
+                uid: user.uid,
+                name: user.name,
+                email: user.email,
+                avatar: user.avatar
+            },
+        },
+        success: true
+    });
 })
 
 const userLogout = catchAsync(async (req, res) => {
