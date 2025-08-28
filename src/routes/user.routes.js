@@ -1,8 +1,8 @@
 import express from "express";
+const router = express.Router();
 import userController from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import authenticateToken from "../middlewares/autehenticateToken.middleware.js";
-const router = express.Router();
 
 // User routes
 router.route("/me/:id")
