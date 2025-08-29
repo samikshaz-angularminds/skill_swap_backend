@@ -1,6 +1,6 @@
 import express from "express";
 import connectionController from "../controllers/connections.controller.js";
-import authenticateToken from "../middlewares/autehenticateToken.middleware.js";
+import authenticateToken from "../middlewares/authenticateToken.middleware.js";
 const router = express.Router();
 
 router.post("/:id/request", authenticateToken, connectionController.sendConnectionRequest)

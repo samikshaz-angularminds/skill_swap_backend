@@ -17,9 +17,9 @@ const MetadataSchema = new Schema({
 }, { _id: false });
 
 const MessageSchema = new Schema({
-  message_id: { type: String, required: true, unique: true }, // or just use _id
-  conversation_id: { type: String, required: true },          // could be ObjectId ref: "Conversation"
-  sender_id: { type: String, required: true },                // could be ObjectId ref: "User"
+  message_id: { type: String, required: true, unique: true }, // UID HERE
+  conversation_id: { type: String, required: true },          // UID HERE
+  sender_id: { type: String, required: true },                // UID HERE
 
   type: { 
     type: String, 

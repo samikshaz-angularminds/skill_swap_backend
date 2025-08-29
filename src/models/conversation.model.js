@@ -6,7 +6,7 @@ const ParticipantSchema = new Schema({
   role: { type: String, enum: ["member", "admin", "owner"], default: "member" },
   joined_at: { type: Date, default: Date.now },
   last_read_message_id: { type: String, default: null }
-});
+}, { _id: false });
 
 const LastMessageSchema = new Schema({
   message_id: { type: String },
@@ -26,10 +26,18 @@ const SettingsSchema = new Schema({
 }, { _id: false });
 
 const ConversationSchema = new Schema({
-  conversation_id: { type: String, required: true, unique: true }, // could also just use _id
+  conversation_id: { type: String, required: true, unique: true }, // UID HERE
   type: { type: String, enum: ["direct", "group", "channel"], default: "direct" },
 
-  participants: [ParticipantSchema],
+  participants: {
+    type: [ParticipantSchema],
+    validate: {
+      validator: function(v) {
+        return Array.isArray(v) && v.length >= 2;
+      },
+      message: "A conversation must have at least 2 participants."
+    }
+  },
 
   title: { type: String, default: null },
   description: { type: String, default: null },
