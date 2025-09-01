@@ -12,3 +12,17 @@ export const uploadImageUtil = async (filePath) => {
         url: response.url,
     };
 };
+
+
+export const uploadImageMessage = async (filePath) => {
+    console.log("filepath: ",filePath);
+    
+    const response = await cloudinary.uploader.upload(filePath, {
+        folder: "SkillSwap-Message",
+    });
+
+    return {
+        public_id: response.public_id,
+        url: response.url,
+    };
+};

@@ -3,7 +3,8 @@ import userRoutes from "./user.routes.js";
 import authRoutes from "./auth.routes.js";
 import connectionRoutes from "./connections.routes.js";
 import conversationRoutes from  "./conversation.routes.js";
-import path from "path";
+import messageRoutes from "./message.routes.js";
+
 
 const router = express.Router();
 
@@ -23,10 +24,14 @@ const defaultRoutes = [
     {
         path: "/conversation",
         route: conversationRoutes
+    },
+    {
+        path: "/message",
+        route: messageRoutes
     }
 ];
 
-defaultRoutes.forEach((route) => {
+defaultRoutes.forEach((route) => {    
     router.use(route.path, route.route);
 })
 

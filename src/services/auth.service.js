@@ -84,7 +84,7 @@ const userSignUpService = async (userDetails) => {
  */
 const userLoginService = async (requestBody) => {
   const user = await User.findOne({ email: requestBody.email });
-  console.log("requestBody in login: ", requestBody);
+  // console.log("requestBody in login: ", requestBody);
 
 
   if (!user) {
