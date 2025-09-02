@@ -6,6 +6,9 @@ import userService from "../services/user.service.js";
 const updateProfileImage = catchAsync(async (req, res) => {
     // console.log(req.file);
 
+    console.log("req.file: ",req.file);
+    
+
     const updateProfilePic = await userService.updateProfileImageService(req.file.path)
 
     // console.log("updateProfilePic-- ", updateProfilePic);

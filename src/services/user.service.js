@@ -1,6 +1,6 @@
 import User from '../models/user.model.js';
 import cloudinary from 'cloudinary';
-import { uploadImageUtil } from '../utils/uploadImageUtil.js';
+import { uploadImageUtil } from '../utils/uploadFileUtil.js';
 
 const cloudinaryV2 = cloudinary.v2;
 

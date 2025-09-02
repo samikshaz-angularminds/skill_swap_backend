@@ -7,9 +7,14 @@ const sendMessageController = catchAsync(async (req, res) => {
     const requestBody = req.body;
     const conversation_id = req.params.id;
     let sendingMessage;
+    
+    if (!conversation_id || !requestBody.sender_id) {
+        throw new ApiError("Missing required fields: conversation_id or sender_id", 400);
+    }
 
     if (req.file) {
         const requestFile = req.file;
+        // console.log("req.file--> ", req.file);
 
         sendingMessage = await messageService.sendMessageService({ requestFile, requestBody, conversation_id });
     }
@@ -17,13 +22,9 @@ const sendMessageController = catchAsync(async (req, res) => {
         sendingMessage = await messageService.sendMessageService({ requestBody, conversation_id });
     }
 
-    // console.log("message request=> ", requestBody);
-    // console.log("conversation_id:- ", conversation_id);
-
-
-    console.log("response: ",sendingMessage);
-    
-
+    if (!sendingMessage) {
+        throw new ApiError("Cannot deliver the message. Please try again later.")
+    }
 
     return sendResponse(res, {
         message: "message delivered successfully",
@@ -32,11 +33,25 @@ const sendMessageController = catchAsync(async (req, res) => {
     })
 });
 
-const getMessageController = catchAsync(async () => { });
+const getMessageController = catchAsync(async (req, res) => {
+    const message_id = req.params.id;
+
+    const foundMessage = await messageService.getMessageService(message_id);
+
+    return sendResponse(res, {
+        message: "message found successfully",
+        success: true,
+        data: foundMessage
+    })
+});
 
 const editMessageController = catchAsync(async () => { });
 
-const deleteMessageController = catchAsync(async () => { });
+const deleteMessageController = catchAsync(async (req,res) => { 
+
+    console.log(req.user);
+    
+});
 
 
 export default {
