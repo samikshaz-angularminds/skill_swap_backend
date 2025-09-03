@@ -48,8 +48,13 @@ const getMessageController = catchAsync(async (req, res) => {
 const editMessageController = catchAsync(async () => { });
 
 const deleteMessageController = catchAsync(async (req,res) => { 
+    console.log("req.params.id: ",req.params.id);
+    
 
-    console.log(req.user);
+    console.log(req.user.uid);
+
+    const deleteMessage = await messageService.deleteMessageService({message_id:req.params.id, loggedInUserUid: req.user.uid});
+
     
 });
 

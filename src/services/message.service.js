@@ -1,6 +1,7 @@
 import ApiError from "../errors/ApiError.js";
 import { randomUUID } from 'crypto';
 import Message from "../models/message.model.js";
+import conversationService from "./conversation.service.js"
 import { uploadAudioUtil, uploadImageMessage, uploadVideoUtil } from "../utils/uploadFileUtil.js";
 
 const resolveMessageType = (mimetype) => {
@@ -74,11 +75,27 @@ const getMessageService = async (message_id) => {
 
 const editMessageService = async () => { };
 
-const deleteMessageService = async ({message_id, loggedInUserUid}) => {
-    const message = getMessageService(message_id);
+const deleteMessageService = async ({message_id, conversation_id,loggedInUserUid}) => {
+    const message = await getMessageService(message_id) ;
 
-if( message.sender_id){}
-    const deletedMessage = await Message.deleteOne({message_id});
+    console.log("message--> ",message);
+
+    console.log();
+    
+    
+    const isLoggedInUserAdmin = (await conversationService.getFullConversationService(message.conversation_id)).participants;
+
+    console.log("found conversation--> ",isLoggedInUserAdmin);
+    
+
+    // console.log(isLoggedInUserAdmin);
+
+    console.log("loggedInUserUid--> ",loggedInUserUid);
+    
+    
+
+// if( message.sender_id === loggedInUserUid || ){}
+    // const deletedMessage = await Message.deleteOne({message_id});
 
     console.log(deletedMessage);
     
