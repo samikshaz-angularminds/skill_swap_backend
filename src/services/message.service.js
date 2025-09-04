@@ -15,7 +15,7 @@ const resolveMessageType = (mimetype) => {
     return "file"; // fallback
 };
 
-const sendMessageService = async ({ requestFile,requestBody, conversation_id }) => {
+const sendMessageService = async ({ requestFile, requestBody, conversation_id }) => {
 
     let sendingMessage;
 
@@ -67,43 +67,110 @@ const getMessageService = async (message_id) => {
     const foundMessage = await Message.findOne({ message_id });
 
     if (!foundMessage) {
-        throw new ApiError("Could not retrieve the message")
+        throw new ApiError(404, "Message not found");
     }
 
     return foundMessage;
 };
 
-const editMessageService = async () => { };
+const editMessageService = async ({ message_id, loggedInUserUid, requestBody }) => {
+    const message = await getMessageService(message_id);
 
-const deleteMessageService = async ({message_id, conversation_id,loggedInUserUid}) => {
-    const message = await getMessageService(message_id) ;
+    if (message.type !== "text") {
+        throw new ApiError(400, "Only text messages can be edited");
+    }
 
-    console.log("message--> ",message);
+    if (message.sender_id !== loggedInUserUid) {
+        throw new ApiError(403, "You are not authorized to edit this message");
+    }
 
-    console.log();
-    
-    
-    const isLoggedInUserAdmin = (await conversationService.getFullConversationService(message.conversation_id)).participants;
+    const editedMessage = await Message.findOneAndUpdate(
+        { message_id },
+        {
+            content: requestBody,
+            is_edited: true,
+            edited_at: new Date()
+        },
+        { new: true }
+    );
 
-    console.log("found conversation--> ",isLoggedInUserAdmin);
-    
+    return editedMessage;
 
-    // console.log(isLoggedInUserAdmin);
+};
 
-    console.log("loggedInUserUid--> ",loggedInUserUid);
-    
-    
+const messageReactionsService = async ({ message_id,user_id, requestBody }) => {
 
-// if( message.sender_id === loggedInUserUid || ){}
-    // const deletedMessage = await Message.deleteOne({message_id});
+    const message = await getMessageService(message_id);
 
-    console.log(deletedMessage);
-    
- };
+    const existingReactionIndex = message.reactions.findIndex(
+        reaction => reaction.user_id === user_id
+    );
+
+    const addReaction = await Message.findOneAndUpdate(
+        { message_id },
+        existingReactionIndex >=0 ? {
+            $set:{
+                "reactions.$[elem].reaction": requestBody.reaction,
+                "reactions.$[elem].reacted_at": new Date(),
+            },
+        } : {
+            $push: {
+                reactions: {
+                    user_id,
+                    reaction: requestBody.reaction,
+                    reacted_at: new Date()
+                }
+            },
+        },
+        {
+            arrayFilters: existingReactionIndex >= 0 ? [{"elem.user_id": user_id}] :undefined,
+            new: true
+        }
+    );
+
+    return addReaction;
+};
+
+const messageDeliveryService = async (requestBody) => { };
+
+const messageReadService = async ({ message_id, requestBody }) => {
+
+
+};
+
+const deleteMessageService = async ({ message_id, loggedInUserUid }) => {
+
+    const message = await getMessageService(message_id);
+
+    const participants = (await conversationService.getFullConversationService(message.conversation_id)).participants;
+    const isLoggedInUserAdmin = participants.some(
+        participant => participant.user_id === loggedInUserUid && participant.role === "admin"
+    );
+
+    if (message.sender_id === loggedInUserUid || isLoggedInUserAdmin) {
+        const deletedMessage = await Message.deleteOne({ message_id });
+
+        if (!deletedMessage) {
+            throw new ApiError(404, "Message not found or already deleted");
+        }
+        console.log(deletedMessage);
+        return deletedMessage;
+    } else {
+        throw new ApiError(403, "You are not authorized to delete this message");
+    }
+
+    return;
+
+};
+
+
 
 export default {
     sendMessageService,
     getMessageService,
     editMessageService,
+    messageReactionsService,
+    messageDeliveryService,
+    messageReadService,
     deleteMessageService
 }

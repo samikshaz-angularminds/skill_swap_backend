@@ -85,8 +85,7 @@ const userSignUpService = async (userDetails) => {
 const userLoginService = async (requestBody) => {
   const user = await User.findOne({ email: requestBody.email });
   // console.log("requestBody in login: ", requestBody);
-  console.log("found user--> ", user);
-
+  // console.log("found user--> ", user);
 
   if (!user) {
     throw new ApiError("User not found")
