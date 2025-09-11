@@ -101,7 +101,9 @@ const getUser = catchAsync(async (req, res) => {
 
 // get all users
 const getAllUsers = catchAsync(async (req, res) => {
-    const users = await userService.getAllUsersService(req.user._id);
+    console.log("req.uer--> ",req.user);
+    
+    const users = await userService.getAllUsersService(req.user.id);
 
     sendResponse(res, {
         statusCode: 200,

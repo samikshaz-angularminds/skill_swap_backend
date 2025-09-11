@@ -44,6 +44,8 @@ const deleteUser = async (userId) => {
 }
 
 const getAllUsersService = async (userId) => {
+  console.log("logged in user id: ",userId);
+  
   const users = await User.find({ _id: { $ne: userId } }).select("-_id -password -__v");
   // console.log("all users are==> ", users);
 
@@ -82,7 +84,7 @@ const updateProfileImageService = async (filePath) => {
 };
 
 const getOneUserService = async (userId) => {
-  const user = await User.findOne({ uid: userId }).select("-password  -v");
+  const user = await User.findOne({ uid: userId }).select("-password  -__v -_id");
 
   return user;
 }

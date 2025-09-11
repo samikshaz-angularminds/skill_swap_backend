@@ -78,7 +78,7 @@ const cancelConnectionRequest = catchAsync(async (req, res) => {
 
 const showPendingRequest = catchAsync(async (req, res) => {
 
-    const pendingRequests = await showPendingRequestService(req.user.uid);
+    const pendingRequests = await connectionService.showPendingRequestService(req.user.uid);
 
     if (!pendingRequests || pendingRequests.length === 0) {
         throw new ApiError("Could not retrieve pending requests");
@@ -95,7 +95,7 @@ const showPendingRequest = catchAsync(async (req, res) => {
 
 const showReceivedRequest = catchAsync(async (req, res) => {
 
-    const receivedRequests = await showReceivedRequestService(req.user.uid);
+    const receivedRequests = await connectionService.showReceivedRequestService(req.user.uid);
 
     if (!receivedRequests) {
         throw new ApiError("Could not retrieve received requests");
@@ -112,7 +112,7 @@ const showReceivedRequest = catchAsync(async (req, res) => {
 
 const showAcceptedRequest = catchAsync(async (req, res) => {
 
-    const acceptedRequests = await showAcceptedRequestService(req.user.uid);
+    const acceptedRequests = await connectionService.showAcceptedRequestService(req.user.uid);
 
     if (!acceptedRequests) {
         throw new ApiError("Could not retrieve accepted requests")
@@ -126,7 +126,6 @@ const showAcceptedRequest = catchAsync(async (req, res) => {
     });
 
 })
-
 
 export default {
     sendConnectionRequest,

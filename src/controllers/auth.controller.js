@@ -71,13 +71,7 @@ const googleLogin = catchAsync(async (req, res) => {
         message: "Login successful88",
         data: {
             accessToken,
-            user: {
-                id: user._id,
-                uid: user.uid,
-                name: user.name,
-                email: user.email,
-                avatar: user.avatar
-            },
+            user
         },
         success: true
     });

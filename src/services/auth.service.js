@@ -144,6 +144,9 @@ const googleLoginService = async (requestBody) => {
 
     }
   }
+
+  console.log("user created in google login: ",user);
+  
   return user;
 }
 

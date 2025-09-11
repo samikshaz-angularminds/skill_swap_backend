@@ -14,7 +14,6 @@ router.get("/:id",authenticateToken,userController.getOneUser)
 
 
 router.put("/update-profile-pic/:id", upload.single("avatar"),userController.updateProfileImage)
-router.put("/update-profile-info/:id",authenticateToken,userController.updateUser)
 
 router.get("/",authenticateToken,userController.getAllUsers);
 

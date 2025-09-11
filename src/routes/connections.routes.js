@@ -4,13 +4,13 @@ import authenticateToken from "../middlewares/authenticateToken.middleware.js";
 const router = express.Router();
 
 router.post("/:id/request", authenticateToken, connectionController.sendConnectionRequest)
-router.post("/:id/accept", authenticateToken, connectionController.acceptConnectionRequest)
+router.put("/:id/accept", authenticateToken, connectionController.acceptConnectionRequest)
 router.post("/:id/reject", authenticateToken, connectionController.rejectConnectionRequest)
 router.post("/:id/cancel", authenticateToken, connectionController.cancelConnectionRequest)
 
 router.get("/me/pending", authenticateToken, connectionController.showPendingRequest)
 router.get("/me/received", authenticateToken, connectionController.showReceivedRequest)
-router.get("/me/all", authenticateToken, connectionController.showAcceptedRequest)
+router.get("/me/accepted", authenticateToken, connectionController.showAcceptedRequest)
 
 
 
