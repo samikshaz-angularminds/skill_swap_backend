@@ -21,6 +21,9 @@ const cloudinaryV2 = cloudinary.v2;
  */
 const getUserService = async (userId) => {
   const user = await User.findById(userId);
+
+  console.log("user found successfully which is: ",user);
+  
   return user;
 };
 
@@ -44,7 +47,7 @@ const deleteUser = async (userId) => {
 }
 
 const getAllUsersService = async (userId) => {
-  console.log("logged in user id: ",userId);
+  // console.log("logged in user id: ",userId);
   
   const users = await User.find({ _id: { $ne: userId } }).select("-_id -password -__v");
   // console.log("all users are==> ", users);

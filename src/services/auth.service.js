@@ -15,7 +15,7 @@ const generateAccessToken = (user) => {
   // console.log("user in access token: ", user);
 
   const payload = {
-    id: user._id.toString(),
+    _id: user._id.toString(),
     uid: user.uid,
     email: user.email,
     username: user.username,
@@ -139,7 +139,8 @@ const googleLoginService = async (requestBody) => {
         name: {
           first: payload.given_name,
           last: payload.family_name
-        }
+        },
+        username: payload.email.split("@")[0]
       })
 
     }

@@ -80,7 +80,10 @@ const deleteUser = catchAsync(async (req, res) => {
 
 // get logged in user
 const getUser = catchAsync(async (req, res) => {
-    const userId = req.use._id;
+    const userId = req.user._id;
+
+    console.log("req.user._id: ",userId);
+    
 
     const user = await userService.getUserService(userId);
 
@@ -96,12 +99,13 @@ const getUser = catchAsync(async (req, res) => {
         statusCode: 200,
         success: true,
         message: "User found successfully",
+        data:user
     })
 })
 
 // get all users
 const getAllUsers = catchAsync(async (req, res) => {
-    console.log("req.uer--> ",req.user);
+    // console.log("req.uer--> ",req.user);
     
     const users = await userService.getAllUsersService(req.user.id);
 

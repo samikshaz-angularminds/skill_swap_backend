@@ -5,7 +5,7 @@ import { upload } from "../middlewares/multer.middleware.js";
 import authenticateToken from "../middlewares/authenticateToken.middleware.js";
 
 // User routes
-router.route("/me/:id")
+router.route("/me")
 .get(authenticateToken,userController.getUser)
 .put(authenticateToken, userController.updateUser)
 .delete(authenticateToken, userController.deleteUser);
