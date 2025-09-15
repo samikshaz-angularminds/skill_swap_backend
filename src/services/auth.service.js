@@ -140,7 +140,8 @@ const googleLoginService = async (requestBody) => {
           first: payload.given_name,
           last: payload.family_name
         },
-        username: payload.email.split("@")[0]
+        username: payload.email.split("@")[0],
+        avatar: {}
       })
 
     }
