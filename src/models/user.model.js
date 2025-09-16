@@ -30,7 +30,7 @@ const UserSchema = new Schema(
     },
 
     username: String, // Unique handle
-    email: { type: String,  unique: true},
+    email: { type: String, unique: true },
     password: String, // Hashed password
     authProvider: String, // e.g., "local", "google", "github"
     oAuthId: String,
@@ -69,8 +69,11 @@ const UserSchema = new Schema(
           type: String,
           enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
         },
-        timeSlots: [String], // e.g., ["14:00-15:00", "18:00-19:00"]
-      },
+        timeSlots: [{
+          startTime: String,// e.g., "14:00"
+          endTime: String   // e.g., "15:00"
+        },{_id:false}], // e.g., ["14:00-15:00", "18:00-19:00"]
+      }, { _id: false }
     ],
 
     calendarSync: {

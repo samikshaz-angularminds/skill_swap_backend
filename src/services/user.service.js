@@ -22,7 +22,7 @@ const cloudinaryV2 = cloudinary.v2;
 const getUserService = async (userId) => {
   const user = await User.findById(userId);
 
-  console.log("user found successfully which is: ",user);
+  // console.log("user found successfully which is: ",user);
   
   return user;
 };

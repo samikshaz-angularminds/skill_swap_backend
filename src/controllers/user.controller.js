@@ -37,7 +37,7 @@ const updateUser = catchAsync(async (req, res) => {
     console.log(req.body);
 
 
-    const updatedUser = await userService.updateUserService({ userId, userData: req.body })
+    const updatedUser = await userService.updateUserService({ userId:req.user._id, userData: req.body })
 
     if (!updatedUser) {
         return sendResponse(res, {
@@ -82,7 +82,7 @@ const deleteUser = catchAsync(async (req, res) => {
 const getUser = catchAsync(async (req, res) => {
     const userId = req.user._id;
 
-    console.log("req.user._id: ",userId);
+    // console.log("req.user._id: ",userId);
     
 
     const user = await userService.getUserService(userId);
