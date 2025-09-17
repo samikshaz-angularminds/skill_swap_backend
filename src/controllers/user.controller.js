@@ -3,11 +3,11 @@ import catchAsync from "../middlewares/catchAsync.js";
 import sendResponse from "../responses/sendResponse.js"; // Adjust the path as needed
 import userService from "../services/user.service.js";
 
-const updateProfileImage = catchAsync(async (req, res) => {
+const updateProfileImageController = catchAsync(async (req, res) => {
     // console.log(req.file);
 
-    console.log("req.file: ",req.file);
-    
+    console.log("req.file: ", req.file);
+
 
     const updateProfilePic = await userService.updateProfileImageService(req.file.path)
 
@@ -30,14 +30,14 @@ const updateProfileImage = catchAsync(async (req, res) => {
 })
 
 // Update User
-const updateUser = catchAsync(async (req, res) => {
+const updateUserController = catchAsync(async (req, res) => {
     const userId = req.params.id;
     const { name, username, bio, location, email } = req.body;
 
     console.log(req.body);
 
 
-    const updatedUser = await userService.updateUserService({ userId:req.user._id, userData: req.body })
+    const updatedUser = await userService.updateUserService({ userId: req.user._id, userData: req.body })
 
     if (!updatedUser) {
         return sendResponse(res, {
@@ -54,7 +54,7 @@ const updateUser = catchAsync(async (req, res) => {
 });
 
 // Delete User
-const deleteUser = catchAsync(async (req, res) => {
+const deleteUserController = catchAsync(async (req, res) => {
     const userId = req.user._id;
 
     const user = await userService.deleteUserService(userId);
@@ -79,11 +79,11 @@ const deleteUser = catchAsync(async (req, res) => {
 });
 
 // get logged in user
-const getUser = catchAsync(async (req, res) => {
+const getUserController = catchAsync(async (req, res) => {
     const userId = req.user._id;
 
     // console.log("req.user._id: ",userId);
-    
+
 
     const user = await userService.getUserService(userId);
 
@@ -99,14 +99,14 @@ const getUser = catchAsync(async (req, res) => {
         statusCode: 200,
         success: true,
         message: "User found successfully",
-        data:user
+        data: user
     })
 })
 
 // get all users
-const getAllUsers = catchAsync(async (req, res) => {
+const getAllUsersController = catchAsync(async (req, res) => {
     // console.log("req.uer--> ",req.user);
-    
+
     const users = await userService.getAllUsersService(req.user.id);
 
     sendResponse(res, {
@@ -117,7 +117,7 @@ const getAllUsers = catchAsync(async (req, res) => {
     })
 })
 
-const getOneUser = catchAsync(async (req, res) => {
+const getOneUserController = catchAsync(async (req, res) => {
     const userId = req.params.id;
 
     const user = await userService.getOneUserService(userId);
@@ -138,11 +138,29 @@ const getOneUser = catchAsync(async (req, res) => {
     });
 })
 
+
+const updateAvailabilityController = catchAsync(async (req, res) => {
+    const requestBody = req.body;
+    const userId = req.params.id;
+    
+    const updatedAvailability = await userService.updateAvailabilityService({ userId, availabilityData: requestBody });
+
+    // console.log("updatedAvailability---> ", updatedAvailability);
+
+    return sendResponse(res, {
+        data: updatedAvailability,
+        message: "update availability of user",
+        success: true
+    })
+
+})
+
 export default {
-    updateProfileImage,
-    updateUser,
-    deleteUser,
-    getUser,
-    getAllUsers,
-    getOneUser
+    updateProfileImageController,
+    updateUserController,
+    deleteUserController,
+    getUserController,
+    getAllUsersController,
+    getOneUserController,
+    updateAvailabilityController
 }

@@ -5,6 +5,8 @@ import connectionRoutes from "./connections.routes.js";
 import conversationRoutes from  "./conversation.routes.js";
 import messageRoutes from "./message.routes.js";
 
+import postRoutes from "./post.temp.routes.js"
+
 
 const router = express.Router();
 
@@ -28,6 +30,10 @@ const defaultRoutes = [
     {
         path: "/message",
         route: messageRoutes
+    },
+    {
+        path:"/posts",
+        route: postRoutes
     }
 ];
 

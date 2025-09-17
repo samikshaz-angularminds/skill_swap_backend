@@ -6,16 +6,17 @@ import authenticateToken from "../middlewares/authenticateToken.middleware.js";
 
 // User routes
 router.route("/me")
-.get(authenticateToken,userController.getUser)
-.put(authenticateToken, userController.updateUser)
-.delete(authenticateToken, userController.deleteUser);
+.get(authenticateToken,userController.getUserController)
+.put(authenticateToken, userController.updateUserController)
+.delete(authenticateToken, userController.deleteUserController);
 
-router.get("/:id",authenticateToken,userController.getOneUser)
+router.get("/:id",authenticateToken,userController.getOneUserController)
 
 
-router.put("/update-profile-pic/:id", upload.single("avatar"),userController.updateProfileImage)
+router.put("/update-profile-pic/:id",authenticateToken, upload.single("avatar"),userController.updateProfileImageController)
+router.patch("/update-availability/:id",authenticateToken,userController.updateAvailabilityController);
 
-router.get("/",authenticateToken,userController.getAllUsers);
+router.get("/",authenticateToken,userController.getAllUsersController);
 
 
 export default router;

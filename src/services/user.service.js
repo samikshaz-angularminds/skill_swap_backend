@@ -1,6 +1,7 @@
 import User from '../models/user.model.js';
 import cloudinary from 'cloudinary';
 import { uploadImageUtil } from '../utils/uploadFileUtil.js';
+import ApiError from '../errors/ApiError.js';
 
 const cloudinaryV2 = cloudinary.v2;
 
@@ -23,7 +24,7 @@ const getUserService = async (userId) => {
   const user = await User.findById(userId);
 
   // console.log("user found successfully which is: ",user);
-  
+
   return user;
 };
 
@@ -48,7 +49,7 @@ const deleteUser = async (userId) => {
 
 const getAllUsersService = async (userId) => {
   // console.log("logged in user id: ",userId);
-  
+
   const users = await User.find({ _id: { $ne: userId } }).select("-_id -password -__v");
   // console.log("all users are==> ", users);
 
@@ -92,11 +93,100 @@ const getOneUserService = async (userId) => {
   return user;
 }
 
+
+const updateAvailabilityService = async ({ userId, availabilityData }) => {
+
+  // const availabilityData = {...requestBody,start}
+  // console.log("availability data: ", availabilityData);
+
+
+
+  const updateAvailability = await User.findByIdAndUpdate(userId, [
+    {
+      $set: {
+        availability: {
+          $cond: [
+            {
+              $in: [availabilityData.dayOfWeek, "$availability.dayOfWeek"]
+            },
+            {
+              $map: {
+                input: "$availability",
+                as: "day",
+                in: {
+                  $cond: [
+                    { $eq: ["$$day.dayOfWeek", availabilityData.dayOfWeek] },
+                    {
+                      dayOfWeek: "$$day.dayOfWeek",
+                      timeSlots: {
+                        $concatArrays: [
+                          "$$day.timeSlots", {
+                            $filter: {
+                              input: availabilityData.timeSlots,
+                              as: "newSlot",
+                              cond: {
+                                $not: {
+                                  $anyElementTrue: {
+                                    $map: {
+                                      input: "$$day.timeSlots",
+                                      as: "existingSlot",
+                                      in: {
+                                        $and: [
+                                          { $eq: ["$$existingSlot.startTime", "$$newSlot.startTime"] },
+                                          { $eq: ["$$existingSlot.endTime", "$$newSlot.endTime"] }
+                                        ]
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "$$day"
+                  ]
+                }
+              }
+            },
+            {
+              $concatArrays: [
+                "$availability",
+                [
+                  {
+                    dayOfWeek: availabilityData.dayOfWeek,
+                    // timeSlots:availabilityData.timeSlots
+                    timeSlots: {
+                      $sortArray: {
+                        input: availabilityData.timeSlots,
+                        sortBy: { startMinutes: 1 }
+                      }
+                    }
+                  }
+
+                ]
+              ]
+
+            }
+          ]
+        }
+      }
+    }
+  ], { new: true });
+
+  await updateAvailability.save();
+
+  return updateAvailability;
+
+}
+
 export default {
   getUserService,
   updateUserService,
   deleteUserService,
   updateProfileImageService,
   getAllUsersService,
-  getOneUserService
+  getOneUserService,
+  updateAvailabilityService
 }

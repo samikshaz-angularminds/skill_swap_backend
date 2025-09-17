@@ -71,8 +71,10 @@ const UserSchema = new Schema(
         },
         timeSlots: [{
           startTime: String,// e.g., "14:00"
-          endTime: String   // e.g., "15:00"
-        },{_id:false}], // e.g., ["14:00-15:00", "18:00-19:00"]
+          endTime: String,  // e.g., "15:00"
+         startMinutes: Number,
+  endMinutes: Number
+        }, { _id: false }], // e.g., ["14:00-15:00", "18:00-19:00"]
       }, { _id: false }
     ],
 
@@ -108,6 +110,33 @@ const UserSchema = new Schema(
     timestamps: true, // automatically handles createdAt and updatedAt
   }
 );
+
+
+UserSchema.pre('save', function (next) {
+  if (this.availability) {
+    console.log("this.availability: ",this.availability);
+    
+    this.availability.forEach(day => {
+      if (day.timeSlots) {
+        day.timeSlots = day.timeSlots.map(slot => ({
+          ...slot,
+          startMinutes: convertTimeToMinutes(slot.startTime),
+          endMinutes: convertTimeToMinutes(slot.endTime)
+        }))
+      }
+    })
+  }
+  next();
+})
+
+
+function convertTimeToMinutes(timeStr) {
+
+  console.log("time string: ",timeStr);
+  
+  const [hours, minutes] = timeStr.split(":").map(Number);
+  return hours * 60 + minutes;
+}
 
 const User = model('User', UserSchema);
 

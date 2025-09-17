@@ -34,7 +34,7 @@ const corsConfig = cors({
 });
 app.use(corsConfig);
 
-app.use('/',routes);
+app.use('/api',routes);
 
 app.use((req,res,next) => {
     next(new ApiError(httpStatus.NOT_FOUND, 'not found'));
