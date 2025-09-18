@@ -107,7 +107,7 @@ const getUserController = catchAsync(async (req, res) => {
 const getAllUsersController = catchAsync(async (req, res) => {
     // console.log("req.uer--> ",req.user);
 
-    const users = await userService.getAllUsersService(req.user.id);
+    const users = await userService.getAllUsersService(req.user._id);
 
     sendResponse(res, {
         statusCode: 200,
@@ -142,6 +142,15 @@ const getOneUserController = catchAsync(async (req, res) => {
 const updateAvailabilityController = catchAsync(async (req, res) => {
     const requestBody = req.body;
     const userId = req.params.id;
+
+    // console.dir(req.body, { depth: null });
+
+    // console.log(JSON.stringify(req.body, null, 2));
+
+
+
+    // console.dir("request body=> ",requestBody,{depth:null});
+    
     
     const updatedAvailability = await userService.updateAvailabilityService({ userId, availabilityData: requestBody });
 

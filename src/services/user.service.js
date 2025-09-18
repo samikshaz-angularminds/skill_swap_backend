@@ -96,88 +96,13 @@ const getOneUserService = async (userId) => {
 
 const updateAvailabilityService = async ({ userId, availabilityData }) => {
 
-  // const availabilityData = {...requestBody,start}
-  // console.log("availability data: ", availabilityData);
+  
+console.dir(availabilityData,{depth:null});
 
 
 
-  const updateAvailability = await User.findByIdAndUpdate(userId, [
-    {
-      $set: {
-        availability: {
-          $cond: [
-            {
-              $in: [availabilityData.dayOfWeek, "$availability.dayOfWeek"]
-            },
-            {
-              $map: {
-                input: "$availability",
-                as: "day",
-                in: {
-                  $cond: [
-                    { $eq: ["$$day.dayOfWeek", availabilityData.dayOfWeek] },
-                    {
-                      dayOfWeek: "$$day.dayOfWeek",
-                      timeSlots: {
-                        $concatArrays: [
-                          "$$day.timeSlots", {
-                            $filter: {
-                              input: availabilityData.timeSlots,
-                              as: "newSlot",
-                              cond: {
-                                $not: {
-                                  $anyElementTrue: {
-                                    $map: {
-                                      input: "$$day.timeSlots",
-                                      as: "existingSlot",
-                                      in: {
-                                        $and: [
-                                          { $eq: ["$$existingSlot.startTime", "$$newSlot.startTime"] },
-                                          { $eq: ["$$existingSlot.endTime", "$$newSlot.endTime"] }
-                                        ]
-                                      }
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    "$$day"
-                  ]
-                }
-              }
-            },
-            {
-              $concatArrays: [
-                "$availability",
-                [
-                  {
-                    dayOfWeek: availabilityData.dayOfWeek,
-                    // timeSlots:availabilityData.timeSlots
-                    timeSlots: {
-                      $sortArray: {
-                        input: availabilityData.timeSlots,
-                        sortBy: { startMinutes: 1 }
-                      }
-                    }
-                  }
 
-                ]
-              ]
 
-            }
-          ]
-        }
-      }
-    }
-  ], { new: true });
-
-  await updateAvailability.save();
-
-  return updateAvailability;
 
 }
 
