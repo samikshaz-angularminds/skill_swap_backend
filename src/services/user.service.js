@@ -96,8 +96,38 @@ const getOneUserService = async (userId) => {
 
 const updateAvailabilityService = async ({ userId, availabilityData }) => {
 
-  
-console.dir(availabilityData,{depth:null});
+  const availabilityArray = availabilityData.availability;
+
+  const user = await User.findById(userId);
+  let updatedAvailabilityOfUser = {};
+
+  availabilityArray.map(async (avObj) => {
+    // console.log("availability object-> ", avObj);
+
+    const existingDayIndex = user.availability.findIndex((a) => a.dayOfWeek === avObj.dayOfWeek);
+
+    // console.log("existingDayIndex-> ", existingDayIndex);
+
+    if (existingDayIndex == -1) {
+      console.log("-1 here -> ", avObj);
+
+      updatedAvailabilityOfUser = await User.findByIdAndUpdate(userId, {
+
+        $push: { availability: avObj }
+      }, { new: true });
+
+
+      console.log("updatedAvailabilityOfUser=> ", updatedAvailabilityOfUser.availability);
+
+    }
+    else {
+      // updatedAvailabilityOfUser = await User.updateSearchIndex()
+      console.log("hi there");
+
+    }
+
+  })
+
 
 
 
