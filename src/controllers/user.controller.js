@@ -143,18 +143,7 @@ const updateAvailabilityController = catchAsync(async (req, res) => {
     const requestBody = req.body;
     const userId = req.params.id;
 
-    // console.dir(req.body, { depth: null });
-
-    // console.log(JSON.stringify(req.body, null, 2));
-
-
-
-    // console.dir("request body=> ",requestBody,{depth:null});
-    
-    
     const updatedAvailability = await userService.updateAvailabilityService({ userId, availabilityData: requestBody });
-
-    // console.log("updatedAvailability---> ", updatedAvailability);
 
     return sendResponse(res, {
         data: updatedAvailability,

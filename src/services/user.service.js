@@ -99,7 +99,6 @@ const updateAvailabilityService = async ({ userId, availabilityData }) => {
   const availabilityArray = availabilityData.availability;
 
   const user = await User.findById(userId);
-  let updatedAvailabilityOfUser = {};
 
   availabilityArray.map(async (avObj) => {
     // console.log("availability object-> ", avObj);
@@ -108,31 +107,60 @@ const updateAvailabilityService = async ({ userId, availabilityData }) => {
 
     // console.log("existingDayIndex-> ", existingDayIndex);
 
-    if (existingDayIndex == -1) {
-      console.log("-1 here -> ", avObj);
+    if (existingDayIndex !== -1) {
+      console.log("if -1 here -> ");
 
-      updatedAvailabilityOfUser = await User.findByIdAndUpdate(userId, {
+      const existingDay = user.availability[existingDayIndex];
 
-        $push: { availability: avObj }
-      }, { new: true });
+      // console.log("object from mongo: ", existingDay);
+      // console.log("Request body object: ", avObj);
+
+      for (const newSlot of avObj.timeSlots) {
+
+        console.log("newSlot.startTime- ", newSlot.startTime);
+        console.log("newSlot.endTime- ", newSlot.endTime);
+        // console.log("slot.startTime- ",slot.startTime);
+        // console.log("slot.endTime- ",slot.endTime);
+        console.log(existingDay);
 
 
-      console.log("updatedAvailabilityOfUser=> ", updatedAvailabilityOfUser.availability);
+
+
+        const duplicate = existingDay.timeSlots.some(
+          (slot) => newSlot.startTime < slot.endTime && newSlot.endTime > slot.startTime
+        )
+
+        if (duplicate) {
+          throw new ApiError(`Time slot ${newSlot.startTime} - ${newSlot.endTime} already exists for ${avObj.dayOfWeek}`)
+        }
+
+        existingDay.timeSlots.push({ ...newSlot })
+      }
+      await user.save();
+
+
+
+      // updatedAvailabilityOfUser = await User.findByIdAndUpdate(userId, {
+
+      //   $push: { availability: avObj }
+      // }, { new: true });
+
+
+      // console.log("updatedAvailabilityOfUser=> ", updatedAvailabilityOfUser.availability);
 
     }
     else {
       // updatedAvailabilityOfUser = await User.updateSearchIndex()
-      console.log("hi there");
-
+      console.log("else there");
+      user.availability.push(avObj);
+      user.save();
     }
 
   })
 
+  console.log("new user availability: ", user.availability);
 
-
-
-
-
+  return user;
 
 }
 
