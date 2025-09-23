@@ -1,4 +1,5 @@
 import cloudinary from "../config/cloudinaryConfig.js";
+import ApiError from "../errors/ApiError.js";
 import catchAsync from "../middlewares/catchAsync.js";
 import sendResponse from "../responses/sendResponse.js"; // Adjust the path as needed
 import userService from "../services/user.service.js";
@@ -151,7 +152,9 @@ const updateAvailabilityController = catchAsync(async (req, res) => {
         success: true
     })
 
-})
+});
+
+
 
 export default {
     updateProfileImageController,
@@ -160,5 +163,6 @@ export default {
     getUserController,
     getAllUsersController,
     getOneUserController,
-    updateAvailabilityController
+    updateAvailabilityController,
+
 }

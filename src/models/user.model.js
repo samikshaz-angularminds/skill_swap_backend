@@ -72,8 +72,8 @@ const UserSchema = new Schema(
         timeSlots: [{
           startTime: String,// e.g., "14:00"
           endTime: String,  // e.g., "15:00"
-         startMinutes: Number,
-  endMinutes: Number
+          startMinutes: Number,
+          endMinutes: Number
         }, { _id: false }], // e.g., ["14:00-15:00", "18:00-19:00"]
       }, { _id: false }
     ],
@@ -89,7 +89,7 @@ const UserSchema = new Schema(
 
     reviews: [
       {
-        fromUserId: ObjectId,
+        fromUserId: String,
         rating: Number,
         comment: String,
         date: Date,
@@ -99,7 +99,7 @@ const UserSchema = new Schema(
     points: Number, // XP-style gamification metric
 
     // matches: [ObjectId], // Matched users
-    messages: [ObjectId], // Message thread IDs
+    // messages: [ObjectId], // Message thread IDs
 
     createdAt: Date,
     updatedAt: Date,
@@ -114,8 +114,8 @@ const UserSchema = new Schema(
 
 UserSchema.pre('save', function (next) {
   if (this.availability) {
-    console.log("this.availability: ",this.availability);
-    
+    console.log("this.availability: ", this.availability);
+
     this.availability.forEach(day => {
       if (day.timeSlots) {
         day.timeSlots = day.timeSlots.map(slot => ({
@@ -132,8 +132,8 @@ UserSchema.pre('save', function (next) {
 
 function convertTimeToMinutes(timeStr) {
 
-  console.log("time string: ",timeStr);
-  
+  console.log("time string: ", timeStr);
+
   const [hours, minutes] = timeStr.split(":").map(Number);
   return hours * 60 + minutes;
 }

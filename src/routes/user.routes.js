@@ -10,13 +10,15 @@ router.route("/me")
 .put(authenticateToken, userController.updateUserController)
 .delete(authenticateToken, userController.deleteUserController);
 
-router.get("/:id",authenticateToken,userController.getOneUserController)
+router.get("/:id",authenticateToken,userController.getOneUserController);
 
 
 router.put("/update-profile-pic/:id",authenticateToken, upload.single("avatar"),userController.updateProfileImageController)
 router.patch("/update-availability/:id",authenticateToken,userController.updateAvailabilityController);
 
 router.get("/",authenticateToken,userController.getAllUsersController);
+
+
 
 
 export default router;

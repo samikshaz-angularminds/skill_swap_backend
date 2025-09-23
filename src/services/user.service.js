@@ -101,31 +101,15 @@ const updateAvailabilityService = async ({ userId, availabilityData }) => {
   const user = await User.findById(userId);
 
   availabilityArray.map(async (avObj) => {
-    // console.log("availability object-> ", avObj);
 
     const existingDayIndex = user.availability.findIndex((a) => a.dayOfWeek === avObj.dayOfWeek);
-
-    // console.log("existingDayIndex-> ", existingDayIndex);
 
     if (existingDayIndex !== -1) {
       console.log("if -1 here -> ");
 
       const existingDay = user.availability[existingDayIndex];
 
-      // console.log("object from mongo: ", existingDay);
-      // console.log("Request body object: ", avObj);
-
       for (const newSlot of avObj.timeSlots) {
-
-        console.log("newSlot.startTime- ", newSlot.startTime);
-        console.log("newSlot.endTime- ", newSlot.endTime);
-        // console.log("slot.startTime- ",slot.startTime);
-        // console.log("slot.endTime- ",slot.endTime);
-        console.log(existingDay);
-
-
-
-
         const duplicate = existingDay.timeSlots.some(
           (slot) => newSlot.startTime < slot.endTime && newSlot.endTime > slot.startTime
         )
@@ -137,17 +121,6 @@ const updateAvailabilityService = async ({ userId, availabilityData }) => {
         existingDay.timeSlots.push({ ...newSlot })
       }
       await user.save();
-
-
-
-      // updatedAvailabilityOfUser = await User.findByIdAndUpdate(userId, {
-
-      //   $push: { availability: avObj }
-      // }, { new: true });
-
-
-      // console.log("updatedAvailabilityOfUser=> ", updatedAvailabilityOfUser.availability);
-
     }
     else {
       // updatedAvailabilityOfUser = await User.updateSearchIndex()
@@ -162,7 +135,11 @@ const updateAvailabilityService = async ({ userId, availabilityData }) => {
 
   return user;
 
-}
+};
+
+
+
+
 
 export default {
   getUserService,
@@ -171,5 +148,6 @@ export default {
   updateProfileImageService,
   getAllUsersService,
   getOneUserService,
-  updateAvailabilityService
+  updateAvailabilityService,
+
 }
