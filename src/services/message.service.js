@@ -50,7 +50,7 @@ const sendMessageService = async ({ requestFile, requestBody, conversation_id })
             });
         } catch (error) {
             console.error("Error uploading image: ", error);
-            throw new ApiError(500, "Failed to upload image");
+            throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, "Failed to upload image");
         }
     }
     else {
@@ -78,7 +78,7 @@ const editMessageService = async ({ message_id, loggedInUserUid, requestBody }) 
     const message = await getMessageService(message_id);
 
     if (message.type !== "text") {
-        throw new ApiError(400, "Only text messages can be edited");
+        throw new ApiError(httpStatus.BAD_REQUEST, "Only text messages can be edited");
     }
 
     if (message.sender_id !== loggedInUserUid) {

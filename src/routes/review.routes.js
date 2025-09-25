@@ -9,6 +9,6 @@ router.route("/:id")
 .patch(authenticateToken, reviewController.editReviewController)
 .delete(authenticateToken, reviewController.deleteReviewController);
 
-router.get("/all",authenticateToken,reviewController.getAllReviewsController);
+router.get("/all/:id",authenticateToken,reviewController.getAllReviewsController);
 
 export default router;

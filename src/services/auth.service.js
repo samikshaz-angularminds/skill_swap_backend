@@ -64,7 +64,7 @@ const userSignUpService = async (userDetails) => {
   const existingUser = await User.findOne({ email: userDetails.email });
 
   if (existingUser) {
-    throw new ApiError(409,"User with this email ID already exists")
+    throw new ApiError(httpStatus.CONFLICT,"User with this email ID already exists")
   }
   // const hashedPassword = await bcrypt.hash(userDetails.password, 12);
 
@@ -180,7 +180,7 @@ const forgotPasswordService = async (email) => {
     transporter.sendMail(mailOptions, function (error, info) {
       // console.log(mailOptions);
 
-      if (error) { return reject(new ApiError(400,"Error occurred while sending an email")) }
+      if (error) { return reject(new ApiError(httpStatus.BAD_REQUEST,"Error occurred while sending an email")) }
       resolve(info)
 
     })
@@ -195,7 +195,7 @@ const verifyOtpService = async (requestBody) => {
   const storedOtp = await redisClient.get(`otp:${requestBody.email}`)
 
   if (requestBody.otpInput !== storedOtp.toString()) {
-    throw new ApiError(400,"Invalid OTP.")
+    throw new ApiError(httpStatus.BAD_REQUEST,"Invalid OTP.")
   }
   return true;
 }
@@ -205,7 +205,7 @@ const verifyOtpService = async (requestBody) => {
 const changePasswordService = async (requestBody) => {
 
   if (requestBody.newPassword !== requestBody.confirmPassword) {
-    throw new ApiError(400,"New Password and confirm password does not match")
+    throw new ApiError(httpStatus.BAD_REQUEST,"New Password and confirm password does not match")
   }
 
   const updatePassword = await User.findOneAndUpdate({ email },

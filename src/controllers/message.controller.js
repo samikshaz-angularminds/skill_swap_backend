@@ -9,7 +9,7 @@ const sendMessageController = catchAsync(async (req, res) => {
     let sendingMessage;
 
     if (!conversation_id || !requestBody.sender_id) {
-        throw new ApiError("Missing required fields: conversation_id or sender_id", 400);
+        throw new ApiError("Missing required fields: conversation_id or sender_id", httpStatus.BAD_REQUEST);
     }
 
     if (req.file) {

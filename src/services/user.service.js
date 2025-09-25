@@ -115,7 +115,7 @@ const updateAvailabilityService = async ({ userId, availabilityData }) => {
         )
 
         if (duplicate) {
-          throw new ApiError(409,`Time slot ${newSlot.startTime} - ${newSlot.endTime} already exists for ${avObj.dayOfWeek}`)
+          throw new ApiError(httpStatus.CONFLICT,`Time slot ${newSlot.startTime} - ${newSlot.endTime} already exists for ${avObj.dayOfWeek}`)
         }
 
         existingDay.timeSlots.push({ ...newSlot })

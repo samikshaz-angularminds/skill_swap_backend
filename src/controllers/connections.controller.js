@@ -82,7 +82,7 @@ const showPendingRequest = catchAsync(async (req, res) => {
     const pendingRequests = await connectionService.showPendingRequestService(req.user.uid);
 
     if (!pendingRequests || pendingRequests.length === 0) {
-        throw new ApiError(400,"Could not retrieve pending requests");
+        throw new ApiError(httpStatus.BAD_REQUEST,"Could not retrieve pending requests");
     }
 
     return sendResponse(res, {
@@ -99,7 +99,7 @@ const showReceivedRequest = catchAsync(async (req, res) => {
     const receivedRequests = await connectionService.showReceivedRequestService(req.user.uid);
 
     if (!receivedRequests) {
-        throw new ApiError(400,"Could not retrieve received requests");
+        throw new ApiError(httpStatus.BAD_REQUEST,"Could not retrieve received requests");
     }
 
     return sendResponse(res, {
@@ -116,7 +116,7 @@ const showAcceptedRequest = catchAsync(async (req, res) => {
     const acceptedRequests = await connectionService.showAcceptedRequestService(req.user.uid);
 
     if (!acceptedRequests) {
-        throw new ApiError(400,"Could not retrieve accepted requests")
+        throw new ApiError(httpStatus.BAD_REQUEST,"Could not retrieve accepted requests")
     }
 
     return sendResponse(res, {

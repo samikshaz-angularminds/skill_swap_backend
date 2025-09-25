@@ -17,7 +17,7 @@ const createConversationService = async (requestBody) => {
     // console.log("existingConversation-- ", existingConversation);
 
     if (existingConversation) {
-        throw new ApiError(400, "Conversation with these participants already exists");
+        throw new ApiError(httpStatus.BAD_REQUEST, "Conversation with these participants already exists");
     }
 
     const newConversation = await Conversation.create({ conversation_id: randomUUID(), ...requestBody });

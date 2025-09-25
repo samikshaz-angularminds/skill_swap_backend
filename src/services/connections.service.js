@@ -4,13 +4,13 @@ import ConnectionRequest from "../models/connection.model.js";
 
 const sendConnectionRequestService = async (requestBody) => {
     if (!requestBody.from || !requestBody.to) {
-        throw new ApiError(400,"Body must contain to and from fields");
+        throw new ApiError(httpStatus.BAD_REQUEST,"Body must contain to and from fields");
     }
 
     const existingRequest = await ConnectionRequest.findOne({ to: requestBody.to, from: requestBody.from, status: "pending" })
 
     if (existingRequest) {
-        throw new ApiError(409,"Connection request already exists")
+        throw new ApiError(httpStatus.CONFLICT,"Connection request already exists")
     }
 
     await ConnectionRequest.deleteOne({
@@ -42,7 +42,7 @@ const acceptConnectionRequestService = async (requestBody) => {
     );
 
     if (!updateRequestStatus) {
-        throw new ApiError(400,"Request could not be accepted or does not exist");
+        throw new ApiError(httpStatus.BAD_REQUEST,"Request could not be accepted or does not exist");
     }
 
     return updateRequestStatus;
@@ -65,7 +65,7 @@ const rejectConnectionRequestService = async (requestBody) => {
     );
 
     if (!updateRequestStatus) {
-        throw new ApiError(400,"Request could not be accepted or does not exist");
+        throw new ApiError(httpStatus.BAD_REQUEST,"Request could not be accepted or does not exist");
     }
 
     return updateRequestStatus;
@@ -82,7 +82,7 @@ const cancelConnectionRequestService = async (requestBody) => {
     )
 
     if (!cancelRequest) {
-        throw new ApiError(400,"Request could not be cancelled or does not exist");
+        throw new ApiError(httpStatus.BAD_REQUEST,"Request could not be cancelled or does not exist");
     }
 
     return cancelRequest

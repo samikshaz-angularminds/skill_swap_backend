@@ -17,7 +17,7 @@ app.use(cookieParser());
 app.use((err, req, res, next) => {
     if (err instanceof multer.MulterError) {
       console.log('Multer error:', err);
-      res.status(500).send('Multer error occurred');
+      res.status(httpStatus.INTERNAL_SERVER_ERROR).send('Multer error occurred');
     } else {
       next(err);
     }
