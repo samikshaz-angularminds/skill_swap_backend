@@ -3,6 +3,7 @@ import { randomUUID } from 'crypto';
 import Message from "../models/message.model.js";
 import conversationService from "./conversation.service.js"
 import { uploadAudioUtil, uploadImageMessage, uploadVideoUtil } from "../utils/uploadFileUtil.js";
+import httpStatus from "http-status";
 
 const resolveMessageType = (mimetype) => {
     if (mimetype.startsWith("image")) {
@@ -67,7 +68,7 @@ const getMessageService = async (message_id) => {
     const foundMessage = await Message.findOne({ message_id });
 
     if (!foundMessage) {
-        throw new ApiError(404, "Message not found");
+        throw new ApiError(httpStatus.NOT_FOUND, "Message not found");
     }
 
     return foundMessage;
@@ -151,7 +152,7 @@ const deleteMessageService = async ({ message_id, loggedInUserUid }) => {
         const deletedMessage = await Message.deleteOne({ message_id });
 
         if (!deletedMessage) {
-            throw new ApiError(404, "Message not found or already deleted");
+            throw new ApiError(httpStatus.NOT_FOUND, "Message not found or already deleted");
         }
         console.log(deletedMessage);
         return deletedMessage;

@@ -7,6 +7,7 @@ import { OAuth2Client } from "google-auth-library"
 import { randomUUID } from 'crypto'
 import jwt from "jsonwebtoken";
 let refreshTokens = [];
+import httpStatus from "http-status";
 
 const client = new OAuth2Client(envConfig.google_client_id);
 
@@ -63,7 +64,7 @@ const userSignUpService = async (userDetails) => {
   const existingUser = await User.findOne({ email: userDetails.email });
 
   if (existingUser) {
-    throw new ApiError("User with this email ID already exists")
+    throw new ApiError(409,"User with this email ID already exists")
   }
   // const hashedPassword = await bcrypt.hash(userDetails.password, 12);
 
@@ -88,7 +89,7 @@ const userLoginService = async (requestBody) => {
   // console.log("found user--> ", user);
 
   if (!user) {
-    throw new ApiError("User not found")
+    throw new ApiError(httpStatus.NOT_FOUND,"User not found")
   }
 
   // const isPasswordMatch = bcrypt.compare(password, user.password);
@@ -111,7 +112,7 @@ const googleLoginService = async (requestBody) => {
   const payload = ticket.getPayload();
 
   if (!payload) {
-    throw new ApiError("User does not exist.")
+    throw new ApiError(httpStatus.NOT_FOUND,"User does not exist.")
   }
 
   // console.log("payload: ", payload);
@@ -159,7 +160,7 @@ const forgotPasswordService = async (email) => {
   const foundedUser = await User.findOne({ email });
 
   if (!foundedUser) {
-    throw new ApiError("User with this email id not found.")
+    throw new ApiError(httpStatus.NOT_FOUND,"User with this email id not found.")
   }
 
   await redisClient.setEx(`otp:${email}`, 300, otp)
@@ -179,7 +180,7 @@ const forgotPasswordService = async (email) => {
     transporter.sendMail(mailOptions, function (error, info) {
       // console.log(mailOptions);
 
-      if (error) { return reject(new ApiError("Error occurred while sending an email")) }
+      if (error) { return reject(new ApiError(400,"Error occurred while sending an email")) }
       resolve(info)
 
     })
@@ -194,7 +195,7 @@ const verifyOtpService = async (requestBody) => {
   const storedOtp = await redisClient.get(`otp:${requestBody.email}`)
 
   if (requestBody.otpInput !== storedOtp.toString()) {
-    throw new ApiError("Invalid OTP.")
+    throw new ApiError(400,"Invalid OTP.")
   }
   return true;
 }
@@ -204,7 +205,7 @@ const verifyOtpService = async (requestBody) => {
 const changePasswordService = async (requestBody) => {
 
   if (requestBody.newPassword !== requestBody.confirmPassword) {
-    throw new ApiError("New Password and confirm password does not match")
+    throw new ApiError(400,"New Password and confirm password does not match")
   }
 
   const updatePassword = await User.findOneAndUpdate({ email },

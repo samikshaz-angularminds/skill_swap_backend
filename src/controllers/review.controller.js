@@ -1,15 +1,15 @@
+import reviewService from "../services/review.service.js";
+import catchAsync from "../middlewares/catchAsync.js";
 
-import reviewService from "../services/review.service";
 
 const addReviewController = catchAsync(async (req, res) => {
-    reviewerId = req.params.id;
-    requestBody = req.body;
+    const fromUserId = req.user.uid ;
+    const toUserId = req.params.id;
+    const requestBody = req.body;
 
-    if (reviewerId === req.user.uid) {
-        throw new ApiError("Cannot add review for itself");
-    }
+    console.log("from user id- ",fromUserId);
 
-    const addedReview = await reviewService.addReviewService(reviewerId)
+    const addedReview = await reviewService.addReviewService({fromUserId,toUserId,requestBody})
 });
 
 const editReviewController = catchAsync(async (req, res) => { });

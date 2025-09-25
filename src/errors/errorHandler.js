@@ -1,16 +1,19 @@
-import ApiError from "./ApiError.js";
 import { envConfig } from "../config/envConfig.js";
 
 const errorHandler = (err,req,res,next) => {
     let statusCode = err.statusCode || 500;
     let message = err.message || "Something went wrong here";
-
-    res.status(statusCode).json({
+    
+    const response = {
         success: false,
         message,
-        ...new ApiError(envConfig.env === 'development' && {stack: err.stack})
+    };
 
-    })
+    if(envConfig.env === 'development' && err.stack){
+        response.stack = err.stack;
+    }
+
+    res.status(statusCode).json(response)
 }
 
 export default errorHandler;

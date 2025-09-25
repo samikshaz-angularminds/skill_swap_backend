@@ -1,6 +1,7 @@
 import ApiError from "../errors/ApiError.js";
 import Conversation from "../models/conversation.model.js";
 import { randomUUID } from 'crypto'
+import httpStatus from "http-status";
 
 
 const createConversationService = async (requestBody) => {
@@ -35,7 +36,7 @@ const updateConversationService = async ({ conversation_id, requestBody }) => {
     );
 
     if(!updateConversation){
-        throw new ApiError("Couldn't find the conversation or failed to update it.")
+        throw new ApiError(httpStatus.NOT_FOUND,"Couldn't find the conversation or failed to update it.")
     }
 
     return updateConversation;
@@ -46,7 +47,7 @@ const getFullConversationService = async (conversation_id) => {
     const conversation = await Conversation.findOne({ conversation_id }).select("-_id");
 
     if (!conversation) {
-        throw new ApiError("Cannot find the conversation with given id.")
+        throw new ApiError(httpStatus.NOT_FOUND,"Cannot find the conversation with given id.")
     }
 
     return conversation;
@@ -58,7 +59,7 @@ const deleteConversationService = async (conversation_id) => {
     const conversation = await Conversation.findOneAndDelete({ conversation_id });
 
     if (!conversation) {
-        throw new ApiError("Cannot find the conversation with given id.")
+        throw new ApiError(httpStatus.NOT_FOUND,"Cannot find the conversation with given id.")
     }
 
     return true;

@@ -2,6 +2,7 @@ import catchAsync from "../middlewares/catchAsync.js"
 import connectionService from "../services/connections.service.js";
 import sendResponse from "../responses/sendResponse.js";
 import ApiError from "../errors/ApiError.js";
+import httpStatus from "http-status";
 
 const sendConnectionRequest = catchAsync(async (req, res) => {
     const from = req.user.uid;
@@ -10,7 +11,7 @@ const sendConnectionRequest = catchAsync(async (req, res) => {
     const sentRequest = await connectionService.sendConnectionRequestService({ from, to })
 
     if (!sentRequest) {
-        throw new ApiError("Could not send the connection request. Please try again later")
+        throw new ApiError(httpStatus.NOT_FOUND,"Could not send the connection request. Please try again later")
     }
 
     sendResponse(res, {
@@ -28,7 +29,7 @@ const acceptConnectionRequest = catchAsync(async (req, res) => {
     console.log("accepting connection request...", acceptRequest);
 
     if (!acceptRequest) {
-        throw new ApiError("No pending connection request found to accept");
+        throw new ApiError(httpStatus.NOT_FOUND,"No pending connection request found to accept");
     }
 
     return sendResponse(res, {
@@ -46,7 +47,7 @@ const rejectConnectionRequest = catchAsync(async (req, res) => {
     const rejectRequest = await connectionService.rejectConnectionRequestService({ to, from });
 
     if (!rejectRequest) {
-        throw new ApiError("No pending request found to reject.")
+        throw new ApiError(httpStatus.NOT_FOUND,"No pending request found to reject.")
     }
 
     return sendResponse(res, {
@@ -65,7 +66,7 @@ const cancelConnectionRequest = catchAsync(async (req, res) => {
     const cancelRequest = await connectionService.cancelConnectionRequestService({ to, from });
 
     if (!cancelRequest) {
-        throw new ApiError("No pending connection request found to cancel");
+        throw new ApiError(httpStatus.NOT_FOUND,"No pending connection request found to cancel");
     }
 
     return sendResponse(res, {
@@ -81,7 +82,7 @@ const showPendingRequest = catchAsync(async (req, res) => {
     const pendingRequests = await connectionService.showPendingRequestService(req.user.uid);
 
     if (!pendingRequests || pendingRequests.length === 0) {
-        throw new ApiError("Could not retrieve pending requests");
+        throw new ApiError(400,"Could not retrieve pending requests");
     }
 
     return sendResponse(res, {
@@ -98,7 +99,7 @@ const showReceivedRequest = catchAsync(async (req, res) => {
     const receivedRequests = await connectionService.showReceivedRequestService(req.user.uid);
 
     if (!receivedRequests) {
-        throw new ApiError("Could not retrieve received requests");
+        throw new ApiError(400,"Could not retrieve received requests");
     }
 
     return sendResponse(res, {
@@ -115,7 +116,7 @@ const showAcceptedRequest = catchAsync(async (req, res) => {
     const acceptedRequests = await connectionService.showAcceptedRequestService(req.user.uid);
 
     if (!acceptedRequests) {
-        throw new ApiError("Could not retrieve accepted requests")
+        throw new ApiError(400,"Could not retrieve accepted requests")
     }
 
     return sendResponse(res, {

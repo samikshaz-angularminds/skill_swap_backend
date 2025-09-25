@@ -1,17 +1,35 @@
+import ApiError from "../errors/ApiError.js";
+import Review from "../models/review.model.js";
+import User from "../models/user.model.js";
+import httpStatus from "http-status";
 
 
-const addReviewService = async ({reviewerId, requestBody}) => {};
+const addReviewService = async ({ fromUserId, toUserId, requestBody }) => {
 
-const editReviewService = async () => {};
+  const doesUserExist = await User.findOne({uid:toUserId});
 
-const deleteReviewService = async () => {};
+  if(!doesUserExist){
+    throw new ApiError(httpStatus.NOT_FOUND,"User with this ID does not exist")
+  }
 
-const getOneReviewService = async () => {};
+  const newReview = await Review.create({
+    fromUserId, toUserId, ...requestBody
+  });
 
-const getAllReviewsService = async () => {};
+  return newReview;
+
+};
+
+const editReviewService = async () => { };
+
+const deleteReviewService = async () => { };
+
+const getOneReviewService = async () => { };
+
+const getAllReviewsService = async () => { };
 
 
-export default{
+export default {
 
   addReviewService,
   editReviewService,

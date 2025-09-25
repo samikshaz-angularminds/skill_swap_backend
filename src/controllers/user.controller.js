@@ -1,8 +1,8 @@
 import cloudinary from "../config/cloudinaryConfig.js";
-import ApiError from "../errors/ApiError.js";
 import catchAsync from "../middlewares/catchAsync.js";
 import sendResponse from "../responses/sendResponse.js"; // Adjust the path as needed
 import userService from "../services/user.service.js";
+import httpStatus from "http-status";
 
 const updateProfileImageController = catchAsync(async (req, res) => {
     // console.log(req.file);
@@ -16,7 +16,7 @@ const updateProfileImageController = catchAsync(async (req, res) => {
 
     if (!updateProfilePic) {
         return sendResponse(res, {
-            statusCode: 404,
+            statusCode: httpStatus.NOT_FOUND,
             success: false,
             message: "User not found",
         });
@@ -42,7 +42,7 @@ const updateUserController = catchAsync(async (req, res) => {
 
     if (!updatedUser) {
         return sendResponse(res, {
-            statusCode: 404,
+            statusCode: httpStatus.NOT_FOUND,
             success: false,
             message: "User not found",
         });
@@ -62,7 +62,7 @@ const deleteUserController = catchAsync(async (req, res) => {
 
     if (!user) {
         return sendResponse(res, {
-            statusCode: 404,
+            statusCode: httpStatus.NOT_FOUND,
             success: false,
             message: "User not found",
         });
@@ -90,7 +90,7 @@ const getUserController = catchAsync(async (req, res) => {
 
     if (!user) {
         return sendResponse(res, {
-            statusCode: 404,
+            statusCode: httpStatus.NOT_FOUND,
             success: false,
             message: "User not found",
         });
@@ -125,7 +125,7 @@ const getOneUserController = catchAsync(async (req, res) => {
 
     if (!user) {
         return sendResponse(res, {
-            statusCode: 404,
+            statusCode: httpStatus.NOT_FOUND,
             success: false,
             message: "User not found",
         });
