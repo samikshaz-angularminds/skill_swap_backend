@@ -114,8 +114,6 @@ const UserSchema = new Schema(
 
 UserSchema.pre('save', function (next) {
   if (this.availability) {
-    console.log("this.availability: ", this.availability);
-
     this.availability.forEach(day => {
       if (day.timeSlots) {
         day.timeSlots = day.timeSlots.map(slot => ({

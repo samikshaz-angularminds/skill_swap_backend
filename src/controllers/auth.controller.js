@@ -11,14 +11,16 @@ const REFRESH_TOKEN_COOKIE_OPTIONS = {
 
 // Register New User
 const userSignUp = catchAsync(async (req, res) => {
+    
 
     const signUpUser = await authService.userSignUpService({ ...req.body });
+
 
     sendResponse(res,
         {
             statusCode: 201,
             message: "User created successfully",
-            data: { userId: signUpUser._id },
+            data: signUpUser,
         });
 });
 
